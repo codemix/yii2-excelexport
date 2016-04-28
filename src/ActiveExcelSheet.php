@@ -227,12 +227,12 @@ class ActiveExcelSheet extends ExcelSheet
     /**
      * @inheritdoc
      */
-    protected function renderRow($data, $row)
+    protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
         $values = array_map(function ($attr) use ($data) {
             return $data->getAttribute($attr);
         }, $this->getAttributes());
-        return parent::renderRow($values, $row);
+        return parent::renderRow($values, $row, $formats, $formatters, $callbacks, $types);
     }
 
     /**

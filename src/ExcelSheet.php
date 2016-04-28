@@ -168,8 +168,13 @@ class ExcelSheet extends Object
      */
     protected function renderRows()
     {
+        $formats = self::normalizeIndex($this->getFormats());
+        $formatters = self::normalizeIndex($this->getFormatters());
+        $callbacks = self::normalizeIndex($this->getCallbacks());
+        $types = self::normalizeIndex($this->getTypes());
+
         foreach ($this->getData() as $data) {
-            $this->renderRow($data, $this->_row++);
+            $this->renderRow($data, $this->_row++, $formats, $formatters, $callbacks, $types);
         }
     }
 
@@ -178,15 +183,14 @@ class ExcelSheet extends Object
      *
      * @param array $data the row data
      * @param int $row the index of the current row
+     * @param mixed $formats formats with normalized index
+     * @param mixed $formatters formatters with normalized index
+     * @param mixed $callbacks callbacks with normalized index
+     * @param mixed $types types with normalized index
      */
-    protected function renderRow($data, $row)
+    protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
-        $formats = $this->getFormats();
-        $formatters = $this->getFormatters();
-        $callbacks = $this->getCallbacks();
-        $types = $this->getTypes();
-
-        foreach ($data as $i => $value) {
+        foreach (array_values($data) as $i => $value) {
             if (isset($formatters[$i]) && is_callable($formatters[$i])) {
                 $value = call_user_func($formatters[$i], $value, $row, $data);
             }
@@ -204,5 +208,21 @@ class ExcelSheet extends Object
                 call_user_func($callbacks[$i], $this->_sheet->getCellByColumnAndRow($i, $row), $i, $row);
             }
         }
+    }
+
+    /**
+     * @param array $data
+     * @return array the array with alphanumeric column keys (A, B, C, ...) converted to numeric indices
+     */
+    protected static function normalizeIndex($data)
+    {
+        if (!is_array($data)) {
+            return $data;
+        }
+        $result = [];
+        foreach ($data as $k => $v) {
+            $result[is_string($k) ? \PHPExcel_Cell::columnIndexFromString($k) : $k] = $v;
+        }
+        return $result;
     }
 }

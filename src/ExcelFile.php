@@ -92,7 +92,7 @@ class ExcelFile extends Object
                     $config = ['class' => $config];
                 } elseif (is_array($config)) {
                     if (!isset($config['class'])) {
-                        $config['class'] = 'app\helpers\ExcelSheet';
+                        $config['class'] = ExcelSheet::className();
                     }
                 } elseif (!is_object($config)) {
                     throw new \Exception('Invalid sheet configuration');
