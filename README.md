@@ -41,7 +41,7 @@ $file->send('user.xlsx');
 
 Install the package through [composer](http://getcomposer.org):
 
-    composer require codemix/yii2-excel-message@dev
+    composer require codemix/yii2-excelexport:1.0.0-alpha
 
 Now you're ready to use the extension.
 
