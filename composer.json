@@ -1,0 +1,23 @@
+{
+    "name": "codemix/yii2-excelexport",
+    "description": "A utility to quickly create Excel files from query results or raw data",
+    "keywords": ["yii2", "excel", "export"],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Härtl",
+            "email": "haertl.mike@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "mikehaertl/php-tmpfile": "^1.0.0",
+        "phpoffice/phpexcel": "1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "codemix\\excelexport\\": "src/"
+        }
+    }
+}
