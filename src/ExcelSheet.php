@@ -181,17 +181,10 @@ class ExcelSheet extends Object
      */
     protected function renderRow($data, $row)
     {
-        // Save some method calls by keeping the results in static vars
-        static $formats = -1;
-        static $formatters;
-        static $callbacks;
-        static $types;
-        if ($formats===-1) {
-            $formats = $this->getFormats();
-            $formatters = $this->getFormatters();
-            $callbacks = $this->getCallbacks();
-            $types = $this->getTypes();
-        }
+        $formats = $this->getFormats();
+        $formatters = $this->getFormatters();
+        $callbacks = $this->getCallbacks();
+        $types = $this->getTypes();
 
         foreach ($data as $i => $value) {
             if (isset($formatters[$i]) && is_callable($formatters[$i])) {
