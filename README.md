@@ -57,7 +57,7 @@ For now we only provide some usage examples instead of a full documentation.
 $file = \Yii::createObject([
     'class' => 'codemix\excelexport\ExcelFile',
 
-    // Default writer is Excel 5. You can use any other writer available from PHPOffice.
+    // Default writer is `\PHPExcel_Writer_Excel2007`. You can use any other writer available from PHPOffice.
     //'writer' => '\PHPExcel_Writer_Excel5',
 
     'sheets' => [

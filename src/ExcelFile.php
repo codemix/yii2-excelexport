@@ -11,9 +11,9 @@ use mikehaertl\tmp\File;
 class ExcelFile extends Object
 {
     /**
-     * @var string the writer class to use. Default is `\PHPExcel_Writer_Excel5`.
+     * @var string the writer class to use. Default is `\PHPExcel_Writer_Excel2007`.
      */
-    public $writer = '\PHPExcel_Writer_Excel5';
+    public $writer = '\PHPExcel_Writer_Excel2007';
 
     protected $_workbook;
     protected $_sheets;
