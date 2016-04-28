@@ -221,7 +221,7 @@ class ExcelSheet extends Object
         }
         $result = [];
         foreach ($data as $k => $v) {
-            $result[is_string($k) ? \PHPExcel_Cell::columnIndexFromString($k) : $k] = $v;
+            $result[is_string($k) ? \PHPExcel_Cell::columnIndexFromString($k)-1 : $k] = $v;
         }
         return $result;
     }
