@@ -1,7 +1,3 @@
-# WIP This extension is still considered alpha stage!
-
-Please use at your own risk - and leave feedback so that we can improve it! Thanks!
-
 Yii2 Excel Export
 =================
 
@@ -39,11 +35,9 @@ $file->send('user.xlsx');
 
 ## Installation
 
-Install the package through [composer](http://getcomposer.org):
+Install the package with [composer](http://getcomposer.org):
 
-    composer require codemix/yii2-excelexport:1.0.0-alpha
-
-Now you're ready to use the extension.
+    composer require codemix/yii2-excelexport *
 
 
 ## Examples
