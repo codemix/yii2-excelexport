@@ -8,7 +8,6 @@ Yii2 Excel Export
 [![Latest Stable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/stable.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
 [![Total Downloads](https://poser.pugx.org/codemix/yii2-excelexport/downloads)](https://packagist.org/packages/codemix/yii2-excelexport)
 [![Latest Unstable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/unstable.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
-[![HHVM Status](http://hhvm.h4cc.de/badge/yiisoft/yii2-dev.png)](http://hhvm.h4cc.de/package/codemix/yii2-excelexport)
 [![License](https://poser.pugx.org/codemix/yii2-excelexport/license.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
 
 
@@ -24,7 +23,8 @@ Yii2 Excel Export
 
 Here's a quick example to get you started:
 
-```
+```php
+<?php
 $file = \Yii::createObject([
     'class' => 'codemix\excelexport\ExcelFile',
     'sheets' => [
@@ -50,7 +50,8 @@ Now you're ready to use the extension.
 
 For now we only provide some usage examples instead of a full documentation:
 
-```
+```php
+<?php
 $file = \Yii::createObject([
     'class' => 'codemix\excelexport\ExcelFile',
     'sheets' => [
