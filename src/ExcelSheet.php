@@ -11,6 +11,7 @@ class ExcelSheet extends Object
     protected $_sheet;
     protected $_data;
     protected $_titles;
+    protected $_types;
     protected $_formats;
     protected $_formatters;
     protected $_callbacks;
@@ -51,7 +52,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return string[]|null|false the column titles indexed by 0-based column index. If empty, `null` or `false`, no titles will be generated.
+     * @return string[]|null|false the column titles indexed by 0-based column index.
+     * If empty, `null` or `false`, no titles will be generated.
      */
     public function getTitles()
     {
@@ -59,11 +61,30 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null|false $value the column titles indexed by 0-based column index. If empty or `false`, no titles will be generated.
+     * @param string[]|null|false $value the column titles indexed by 0-based column index.
+     * If empty or `false`, no titles will be generated.
      */
     public function setTitles($value)
     {
         $this->_titles = $value;
+    }
+
+    /**
+     * @return string[]|null the types for the column cells indexed by 0-based column index. See the
+     * `PHPExcel_Cell_DataType::TYPE_*` constants for available types. If no type is set for a column,
+     * PHPExcel will autodetect the correct type.
+     */
+    public function getTypes()
+    {
+        return $this->_types;
+    }
+
+    /**
+     * @param string[]|null $value the types for the column cells indexed by 0-based column index
+     */
+    public function setTypes($value)
+    {
+        $this->_types = $value;
     }
 
     /**
@@ -84,7 +105,8 @@ class ExcelSheet extends Object
 
     /**
      * @return Callable[]|null the value formatters for the column cells indexed by 0-based column index.
-     * The function receives the `$value` and `$row` data as arguments and must return the final raw cell value.
+     * The function signature is `function ($value, $row, $data)` where `$value` is the cell value, `$row`
+     * is the row index and `$data` is the row data.
      */
     public function getFormatters()
     {
@@ -159,15 +181,27 @@ class ExcelSheet extends Object
      */
     protected function renderRow($data, $row)
     {
-        $formats = $this->getFormats();
-        $formatters = $this->getFormatters();
-        $callbacks = $this->getCallbacks();
+        // Save some method calls by keeping the results in static vars
+        static $formats = -1;
+        static $formatters;
+        static $callbacks;
+        static $types;
+        if ($formats===-1) {
+            $formats = $this->getFormats();
+            $formatters = $this->getFormatters();
+            $callbacks = $this->getCallbacks();
+            $types = $this->getTypes();
+        }
 
         foreach ($data as $i => $value) {
             if (isset($formatters[$i]) && is_callable($formatters[$i])) {
-                $value = call_user_func($formatters[$i], $value);
+                $value = call_user_func($formatters[$i], $value, $row, $data);
             }
-            $this->_sheet->setCellValueByColumnAndRow($i, $row, $value);
+            if (isset($types[$i])) {
+                $this->_sheet->setCellValueExplicitByColumnAndRow($i, $row, $value, $types[$i]);
+            } else {
+                $this->_sheet->setCellValueByColumnAndRow($i, $row, $value);
+            }
             if (isset($formats[$i])) {
                 $this->_sheet->getStyleByColumnAndRow($i, $row)
                     ->getNumberFormat()

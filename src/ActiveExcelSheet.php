@@ -99,8 +99,9 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param string[]|false $value the column titles indexed by 0-based column index. If an empty array or `false`, no titles will be generated.
-     * If a column index is missing from the array, the default from `getTitles()` is used for that column.
+     * @param string[]|false $value the column titles indexed by 0-based column index.
+     * The array is merged with the default titles from `getTitles()` (=attribute labels).
+     * If an empty array or `false`, no titles will be generated.
      */
     public function setTitles($value)
     {
@@ -147,7 +148,8 @@ class ActiveExcelSheet extends ExcelSheet
 
     /**
      * @param string[]|false $value the format strings for the column cells indexed by 0-based column index.
-     * If a column index is missing from the array, the default from `getFormats()` is used for that column.
+     * The array is merged with the default formats from `getFormats()` (auto-generated from DB columns).
+     * If an empty array or `false`, no formats are applied.
      */
     public function setFormats($value)
     {
@@ -188,8 +190,9 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param Callable[]|null $value the value formatters for the column cells indexed by 0-based column index
-     * If a column index is missing from the array, the default from `getFormatters()` is used for that column.
+     * @param Callable[]|null $value the value formatters for the column cells indexed by 0-based column index.
+     * The array is merged with the default formats from `getFormatters()` (auto-generated from DB columns).
+     * If an empty array or `false`, no formatters are applied.
      */
     public function setFormatters($value)
     {
@@ -206,7 +209,7 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return yii\db\ColumnSchema[] the column types indexed by 0-based column index
+     * @return yii\db\ColumnSchema[] the DB column types `ColumnSchema::$type` indexed by 0-based column index
      */
     protected function getColumnTypes()
     {
