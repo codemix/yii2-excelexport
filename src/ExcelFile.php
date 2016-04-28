@@ -4,14 +4,17 @@ namespace codemix\excelexport;
 use Yii;
 use yii\base\Object;
 use mikehaertl\tmp\File;
-use \PHPExcel;
-use \PHPExcel_Writer_Excel5;
 
 /**
  * This class represents an excel file.
  */
 class ExcelFile extends Object
 {
+    /**
+     * @var string the writer class to use. Default is `\PHPExcel_Writer_Excel5`.
+     */
+    public $writer = '\PHPExcel_Writer_Excel5';
+
     protected $_workbook;
     protected $_sheets;
     protected $_tmpFile;
@@ -23,7 +26,7 @@ class ExcelFile extends Object
     public function getWorkbook()
     {
         if ($this->_workbook===null) {
-            $this->_workbook = new PHPExcel();
+            $this->_workbook = new \PHPExcel();
         }
         return $this->_workbook;
     }
@@ -103,7 +106,8 @@ class ExcelFile extends Object
                 }
                 Yii::createObject($config, [$sheet])->render();
             }
-            $writer = new PHPExcel_Writer_Excel5($workbook);
+            $class = $this->writer;
+            $writer = new $class($workbook);
             $writer->save((string) $this->getTmpFile());
             $this->_created = true;
         }
