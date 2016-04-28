@@ -5,10 +5,10 @@ Please use at your own risk - and leave feedback so that we can improve it! Than
 Yii2 Excel Export
 =================
 
-[![Latest Stable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/stable.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
+[![Latest Stable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/stable)](https://packagist.org/packages/codemix/yii2-excelexport)
 [![Total Downloads](https://poser.pugx.org/codemix/yii2-excelexport/downloads)](https://packagist.org/packages/codemix/yii2-excelexport)
-[![Latest Unstable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/unstable.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
-[![License](https://poser.pugx.org/codemix/yii2-excelexport/license.svg)](https://packagist.org/packages/codemix/yii2-excelexport)
+[![Latest Unstable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/unstable)](https://packagist.org/packages/codemix/yii2-excelexport)
+[![License](https://poser.pugx.org/codemix/yii2-excelexport/license)](https://packagist.org/packages/codemix/yii2-excelexport)
 
 
 ## Features
