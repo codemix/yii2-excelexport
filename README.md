@@ -158,7 +158,9 @@ $file->send('demo.xlsx');
 
 ### Styling
 
-As you have access to the `PHPExcel` object you can modify the excel file as you like:
+As you have access to the `PHPExcel` object you can modify the excel file as you like.
+For details please consult the
+[PHPExcel documentation](https://github.com/PHPOffice/PHPExcel/tree/develop/Documentation/markdown/Overview).
 
 ```php
 <?php
