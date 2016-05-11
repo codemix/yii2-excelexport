@@ -42,7 +42,7 @@ Install the package with [composer](http://getcomposer.org):
 
 ## Examples
 
-For now we only provide some usage examples instead of a full documentation.
+Instead of a full documentation we better show you some examples. You should be able to take it from there.
 
 ### ActiveQuery results
 
@@ -155,3 +155,66 @@ $file = \Yii::createObject([
 ]);
 $file->send('demo.xlsx');
 ```
+
+### Styling
+
+As you have access to the `PHPExcel` object you can modify the excel file as you like:
+
+```php
+<?php
+$file = \Yii::createObject([
+    'class' => 'codemix\excelexport\ExcelFile',
+    'sheets' => [
+        'Users' => [
+            'class' => 'codemix\excelexport\ActiveExcelSheet',
+            'query' => User::find(),
+        ]
+    ]
+]);
+$phpExcel = $file->getWorkbook();
+$phpExcel->getSheet(1)->getStyle('B1')
+    ->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_RED);
+```
+
+Alternatively you can use the callback feature from our `ExcelSheet`:
+
+```php
+<?php
+$file = \Yii::createObject([
+    'class' => 'codemix\excelexport\ExcelFile',
+    'sheets' => [
+        'Users' => [
+            'class' => 'codemix\excelexport\ActiveExcelSheet',
+            'query' => User::find(),
+            'callbacks' => [
+                // $cell is a PHPExcel_Cell object
+                'A' => function ($cell, $row, $column) {
+                    $cell->getStyle()->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                        ],
+                        'alignment' => [
+                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                        ],
+                        'borders' => [
+                            'top' => [
+                                'style' => \PHPExcel_Style_Border::BORDER_THIN,
+                            ],
+                        ],
+                        'fill' => [
+                            'type' => \PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                            'rotation' => 90,
+                            'startcolor' => [
+                                'argb' => 'FFA0A0A0',
+                            ],
+                            'endcolor' => [
+                                'argb' => 'FFFFFFFF',
+                            ],
+                        ],
+                    ]);
+                },
+            ],
+        ],
+    ],
+]);
+

@@ -51,7 +51,9 @@ class ExcelFile extends Object
     }
 
     /**
-     * @param array $value the sheet configuration
+     * @param array $value the sheet configuration. This must be an array where keys
+     * are sheet names and values are arrays with the configuration options for an
+     * instance if `ExcelSheet`.
      */
     public function setSheets($value)
     {
