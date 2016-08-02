@@ -1,6 +1,8 @@
 <?php
 namespace codemix\excelexport;
 
+use yii\db\ActiveRecord;
+
 /**
  * An excel sheet that is rendered with data from an `ActiveQuery`.
  * A query must be set with `setQuery()`.
@@ -230,7 +232,7 @@ class ActiveExcelSheet extends ExcelSheet
     protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
         $values = array_map(function ($attr) use ($data) {
-            return $data->getAttribute($attr);
+            return static::getAttribute($data, $attr);
         }, $this->getAttributes());
         return parent::renderRow($values, $row, $formats, $formatters, $callbacks, $types);
     }
@@ -262,5 +264,24 @@ class ActiveExcelSheet extends ExcelSheet
         } else {
             return $model->getTableSchema()->columns[$attribute];
         }
+    }
+
+    /**
+     * @param $model ActiveRecord
+     * @param $attribute string
+     * @return mixed
+     */
+    public static function getAttribute($model, $attribute)
+    {
+
+        if (($pos = strrpos($attribute, '.')) !== false) {
+            $related = substr($attribute, 0, $pos);
+            $model = $model->$related;
+            $attribute = substr($attribute, $pos + 1);
+            return static::getAttribute($model, $attribute);
+        }
+
+        return $model->getAttribute($attribute);
+
     }
 }
