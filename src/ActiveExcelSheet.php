@@ -1,6 +1,8 @@
 <?php
 namespace codemix\excelexport;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * An excel sheet that is rendered with data from an `ActiveQuery`.
  * A query must be set with `setQuery()`.
@@ -230,7 +232,7 @@ class ActiveExcelSheet extends ExcelSheet
     protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
         $values = array_map(function ($attr) use ($data) {
-            return $data->getAttribute($attr);
+            return ArrayHelper::getValue($data, $attr);
         }, $this->getAttributes());
         return parent::renderRow($values, $row, $formats, $formatters, $callbacks, $types);
     }
