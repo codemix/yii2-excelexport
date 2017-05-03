@@ -13,12 +13,25 @@ class ExcelFile extends Object
     /**
      * @var string the writer class to use. Default is `\PHPExcel_Writer_Excel2007`.
      */
-    public $writer = '\PHPExcel_Writer_Excel2007';
+    public $writerClass = '\PHPExcel_Writer_Excel2007';
 
+    protected $_writer;
     protected $_workbook;
     protected $_sheets;
     protected $_tmpFile;
     protected $_created = false;
+
+    /**
+     * @return PHPExcel_Writer_Abstract the writer instance
+     */
+    public function getWriter()
+    {
+        if ($this->_writer===null) {
+            $class = $this->writerClass;
+            $this->_writer = new $class($this->getWorkbook());
+        }
+        return $this->_writer;
+    }
 
     /**
      * @return PHPExcel the workbook instance
@@ -108,9 +121,7 @@ class ExcelFile extends Object
                 }
                 Yii::createObject($config, [$sheet])->render();
             }
-            $class = $this->writer;
-            $writer = new $class($workbook);
-            $writer->save((string) $this->getTmpFile());
+            $this->getWriter()->save((string) $this->getTmpFile());
             $this->_created = true;
         }
     }

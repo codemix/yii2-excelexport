@@ -47,13 +47,14 @@ Find more examples below.
 
 Property | Description
 ---------|-------------
-`writer` | The file format as supported by PHPOffice. The default is ` '\PHPExcel_Writer_Excel2007'`
+`writerClass` | The file format as supported by PHPOffice. The default is ` '\PHPExcel_Writer_Excel2007'`
 `sheets` | An array of sheet configurations (see below). The keys are used as sheet names.
 
 Methods | Description
 ---------|-------------
 `saveAs($name)` | Saves the excel file under `$name`
 `send($name=null,$inline=false)` | Sends the excel file to the browser. If `$name` is empty, the file is streamed for inline display, otherwhise a download dialog will open, unless `$inline` is `true` which will force inline display even if a filename is supplied.
+`getWriter()` | Returns the `PHPExcel_Writer_Abstract` instance
 `getWorkbook()` | Returns the `PHPExcel` workbook instance
 `getTmpFile()` | Returns the `mikehaertl\tmp\File` instance of the temporary file
 
@@ -93,7 +94,7 @@ Property | Description
 $file = \Yii::createObject([
     'class' => 'codemix\excelexport\ExcelFile',
 
-    'writer' => '\PHPExcel_Writer_Excel5', // Override default of `\PHPExcel_Writer_Excel2007`
+    'writerClass' => '\PHPExcel_Writer_Excel5', // Override default of `\PHPExcel_Writer_Excel2007`
 
     'sheets' => [
 
