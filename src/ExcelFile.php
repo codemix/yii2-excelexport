@@ -15,6 +15,13 @@ class ExcelFile extends Object
      */
     public $writerClass = '\PHPExcel_Writer_Excel2007';
 
+    /**
+     * @var array options to pass to the constructor of \mikehaertl\tmp\File,
+     * indexed by option name. Available keys are 'suffix', 'prefix' and 'directory'.
+     * This is only useful if creation of the temporary file fails for some reason.
+     */
+    public $fileOptions = [];
+
     protected $_writer;
     protected $_workbook;
     protected $_sheets;
@@ -50,7 +57,10 @@ class ExcelFile extends Object
     public function getTmpFile()
     {
         if ($this->_tmpFile===null) {
-            $this->_tmpFile = new File('');
+            $suffix = isset($this->fileOptions['suffix']) ? $this->fileOptions['suffix'] : null;
+            $prefix = isset($this->fileOptions['prefix']) ? $this->fileOptions['prefix'] : null;
+            $directory = isset($this->fileOptions['directory']) ? $this->fileOptions['directory'] : null;
+            $this->_tmpFile = new File('', $suffix, $prefix, $directory);
         }
         return $this->_tmpFile;
     }
