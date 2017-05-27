@@ -47,8 +47,9 @@ Find more examples below.
 
 Property | Description
 ---------|-------------
-`writerClass` | The file format as supported by PHPOffice. The default is ` '\PHPExcel_Writer_Excel2007'`
+`writerClass` | The file format as supported by PHPOffice. The default is `\PHPExcel_Writer_Excel2007`
 `sheets` | An array of sheet configurations (see below). The keys are used as sheet names.
+`fileOptions` | Options to pass to the constructor of `mikehaertl\tmp\File`. Available keys are `prefix`, `suffix` and `directory`.
 
 Methods | Description
 ---------|-------------
