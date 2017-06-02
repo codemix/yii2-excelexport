@@ -55,6 +55,7 @@ Methods | Description
 ---------|-------------
 `saveAs($name)` | Saves the excel file under `$name`
 `send($name=null,$inline=false)` | Sends the excel file to the browser. If `$name` is empty, the file is streamed for inline display, otherwhise a download dialog will open, unless `$inline` is `true` which will force inline display even if a filename is supplied.
+`createSheets()` | Only creates the sheets of the excel workbook but does not save the file. This is usually called implicitely on `saveAs()` and `send()` but can also be called manually to modify the sheets before saving.
 `getWriter()` | Returns the `PHPExcel_Writer_Abstract` instance
 `getWorkbook()` | Returns the `PHPExcel` workbook instance
 `getTmpFile()` | Returns the `mikehaertl\tmp\File` instance of the temporary file

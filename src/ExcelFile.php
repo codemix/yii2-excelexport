@@ -26,7 +26,8 @@ class ExcelFile extends Object
     protected $_workbook;
     protected $_sheets;
     protected $_tmpFile;
-    protected $_created = false;
+    protected $_fileCreated = false;
+    protected $_sheetsCreated = false;
 
     /**
      * @return PHPExcel_Writer_Abstract the writer instance
@@ -108,11 +109,11 @@ class ExcelFile extends Object
     }
 
     /**
-     * Create the Excel file and save it to the temp file
+     * Create the Excel sheets if they were not created yet
      */
-    protected function createFile()
+    public function createSheets()
     {
-        if (!$this->_created) {
+        if (!$this->_sheetsCreated) {
             $workbook = $this->getWorkbook();
             $i = 0;
             foreach ($this->sheets as $title => $config) {
@@ -131,8 +132,19 @@ class ExcelFile extends Object
                 }
                 Yii::createObject($config, [$sheet])->render();
             }
+            $this->_sheetsCreated = true;
+        }
+    }
+
+    /**
+     * Create the Excel file and save it to the temp file
+     */
+    protected function createFile()
+    {
+        if (!$this->_fileCreated) {
+            $this->createSheets();
             $this->getWriter()->save((string) $this->getTmpFile());
-            $this->_created = true;
+            $this->_fileCreated = true;
         }
     }
 }
