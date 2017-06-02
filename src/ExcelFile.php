@@ -3,6 +3,7 @@ namespace codemix\excelexport;
 
 use Yii;
 use yii\base\Object;
+use yii\helpers\ArrayHelper;
 use mikehaertl\tmp\File;
 
 /**
@@ -60,9 +61,9 @@ class ExcelFile extends Object
     public function getTmpFile()
     {
         if ($this->_tmpFile === null) {
-            $suffix = isset($this->fileOptions['suffix']) ? $this->fileOptions['suffix'] : null;
-            $prefix = isset($this->fileOptions['prefix']) ? $this->fileOptions['prefix'] : null;
-            $directory = isset($this->fileOptions['directory']) ? $this->fileOptions['directory'] : null;
+            $suffix = ArrayHelper::getValue($this->fileOptions, 'suffix');
+            $prefix = ArrayHelper::getValue($this->fileOptions, 'prefix');
+            $directory = ArrayHelper::getValue($this->fileOptions, 'directory');
             $this->_tmpFile = new File('', $suffix, $prefix, $directory);
         }
         return $this->_tmpFile;
