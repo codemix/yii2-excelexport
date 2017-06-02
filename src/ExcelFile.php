@@ -106,11 +106,13 @@ class ExcelFile extends Object
      * streamed inline.
      * @param bool $inline whether to force inline display of the file, even if
      * filename is present.
+     * @param string $contentType the Content-Type header. Default is
+     * 'application/vnd.ms-excel'.
      */
-    public function send($filename = null, $inline = false)
+    public function send($filename = null, $inline = false, $contentType =  'application/vnd.ms-excel')
     {
         $this->createFile();
-        $this->getTmpFile()->send($filename, 'application/vnd.ms-excel', $inline);
+        $this->getTmpFile()->send($filename, $contentType, $inline);
     }
 
     /**
