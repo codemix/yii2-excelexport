@@ -33,7 +33,7 @@ class ActiveExcelSheet extends ExcelSheet
      */
     public function getQuery()
     {
-        if ($this->_query===null) {
+        if ($this->_query === null) {
             throw new \Exception('No query set');
         }
         return $this->_query;
@@ -56,12 +56,13 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return string[] list of attributes for the table columns. If no attributes are set,
-     * attributes are set to `ActiveRecord::attributes()` for the main query record.
+     * @return string[] list of attributes for the table columns. If no
+     * attributes are set, attributes are set to `ActiveRecord::attributes()`
+     * for the main query record.
      */
     public function getAttributes()
     {
-        if ($this->_attributes===null) {
+        if ($this->_attributes === null) {
             $class = $this->getQuery()->modelClass;
             $model = new $class;
             $this->_attributes = $model->attributes();
@@ -86,11 +87,12 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return string[] the column titles. If not set, the respective attribute label is used
+     * @return string[] the column titles. If not set, the respective attribute
+     * label is used
      */
     public function getTitles()
     {
-        if ($this->_titles===null) {
+        if ($this->_titles === null) {
             $class = $this->getQuery()->modelClass;
             $model = new $class;
             $this->_titles = array_map(function ($a) use ($model) {
@@ -101,16 +103,17 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param string[]|false $value the column titles indexed by 0-based column index.
-     * The array is merged with the default titles from `getTitles()` (=attribute labels).
-     * If an empty array or `false`, no titles will be generated.
+     * @param string[]|false $value the column titles indexed by 0-based column
+     * index.  The array is merged with the default titles from `getTitles()`
+     * (=attribute labels).  If an empty array or `false`, no titles will be
+     * generated.
      */
     public function setTitles($value)
     {
         if (!$value) {
             $this->_titles = $value;
         } else {
-            if ($this->_titles===null) {
+            if ($this->_titles === null) {
                 $this->getTitles(); // Sets attribute labels as defaults
             }
             foreach ($value as $i => $v) {
@@ -120,12 +123,13 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param string[] $value the format strings for the column cells indexed by 0-based column index.
-     * If not set, the formats are auto-generated from the DB column types.
+     * @param string[] $value the format strings for the column cells indexed
+     * by 0-based column index.  If not set, the formats are auto-generated
+     * from the DB column types.
      */
     public function getFormats()
     {
-        if ($this->_formats===null) {
+        if ($this->_formats === null) {
             $this->_formats = [];
             $attrs = $this->getAttributes();
             $types = $this->getColumnTypes();
@@ -149,16 +153,17 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param string[]|false $value the format strings for the column cells indexed by 0-based column index.
-     * The array is merged with the default formats from `getFormats()` (auto-generated from DB columns).
-     * If an empty array or `false`, no formats are applied.
+     * @param string[]|false $value the format strings for the column cells
+     * indexed by 0-based column index.  The array is merged with the default
+     * formats from `getFormats()` (auto-generated from DB columns).  If an
+     * empty array or `false`, no formats are applied.
      */
     public function setFormats($value)
     {
         if (!$value) {
             $this->_formats = $value;
         } else {
-            if ($this->_formats===null) {
+            if ($this->_formats === null) {
                 $this->getFormats(); // Sets auto-generated formats as defaults
             }
             foreach ($value as $i => $v) {
@@ -168,12 +173,13 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return Callable[] the value formatters for the column cells indexed by 0-based column index.
-     * If not set, the formatters are aut-generated from the DB column types.
+     * @return Callable[] the value formatters for the column cells indexed by
+     * 0-based column index.  If not set, the formatters are aut-generated from
+     * the DB column types.
      */
     public function getFormatters()
     {
-        if ($this->_formatters===null) {
+        if ($this->_formatters === null) {
             $this->_formatters = [];
             $attrs = $this->getAttributes();
             $types = $this->getColumnTypes();
@@ -192,16 +198,17 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param Callable[]|null $value the value formatters for the column cells indexed by 0-based column index.
-     * The array is merged with the default formats from `getFormatters()` (auto-generated from DB columns).
-     * If an empty array or `false`, no formatters are applied.
+     * @param Callable[]|null $value the value formatters for the column cells
+     * indexed by 0-based column index.  The array is merged with the default
+     * formats from `getFormatters()` (auto-generated from DB columns).  If an
+     * empty array or `false`, no formatters are applied.
      */
     public function setFormatters($value)
     {
         if (!$value) {
             $this->_formatters = $value;
         } else {
-            if ($this->_formatters===null) {
+            if ($this->_formatters === null) {
                 $this->getFormatters(); // Sets auto-generated formatters as defaults
             }
             foreach ($value as $i => $v) {
@@ -211,11 +218,12 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return yii\db\ColumnSchema[] the DB column types `ColumnSchema::$type` indexed by 0-based column index
+     * @return yii\db\ColumnSchema[] the DB column types `ColumnSchema::$type`
+     * indexed by 0-based column index
      */
     protected function getColumnTypes()
     {
-        if ($this->_columnTypes===null) {
+        if ($this->_columnTypes === null) {
             $class = $this->getQuery()->modelClass;
             $model = new $class;
             $this->_columnTypes = array_map(function ($attr) use ($model) {
@@ -238,19 +246,24 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * Returns either the ColumnSchema or a new instance of the related model for the given attribute name.
+     * Returns either the ColumnSchema or a new instance of the related model
+     * for the given attribute name.
      *
-     * The name can be specified in dot format, like `company.name` in which case the ColumnSchema for
-     * the `name` attribute in the related `company` record would be returned.
+     * The name can be specified in dot format, like `company.name` in which
+     * case the ColumnSchema for the `name` attribute in the related `company`
+     * record would be returned.
      *
-     * If the attribute is a relation name (which could also use dot notation) then `$isRelation` must
-     * be set to `true`. In this case an instance of the related ActiveRecord class is returned.
+     * If the attribute is a relation name (which could also use dot notation)
+     * then `$isRelation` must be set to `true`. In this case an instance of
+     * the related ActiveRecord class is returned.
      *
      * @param yii\db\ActiveRecord $model the model where the attribute exist
      * @param string $attribute name of the attribute
-     * @param mixed $isRelation whether the name specifies a relation, in which case an `ActiveRecord`
-     * is returned. Default is `false`, which returns a `ColumnSchema`.
-     * @return yii\db\ColumnSchema|yii\db\ActiveRecord the type instance of the attribute
+     * @param mixed $isRelation whether the name specifies a relation, in which
+     * case an `ActiveRecord` is returned. Default is `false`, which returns a
+     * `ColumnSchema`.
+     * @return yii\db\ColumnSchema|yii\db\ActiveRecord the type instance of the
+     * attribute
      */
     public static function getType($model, $attribute, $isRelation = false)
     {

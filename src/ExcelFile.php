@@ -11,14 +11,16 @@ use mikehaertl\tmp\File;
 class ExcelFile extends Object
 {
     /**
-     * @var string the writer class to use. Default is `\PHPExcel_Writer_Excel2007`.
+     * @var string the writer class to use. Default is
+     * `\PHPExcel_Writer_Excel2007`.
      */
     public $writerClass = '\PHPExcel_Writer_Excel2007';
 
     /**
      * @var array options to pass to the constructor of \mikehaertl\tmp\File,
-     * indexed by option name. Available keys are 'suffix', 'prefix' and 'directory'.
-     * This is only useful if creation of the temporary file fails for some reason.
+     * indexed by option name. Available keys are 'suffix', 'prefix' and
+     * 'directory'.  This is only useful if creation of the temporary file
+     * fails for some reason.
      */
     public $fileOptions = [];
 
@@ -34,7 +36,7 @@ class ExcelFile extends Object
      */
     public function getWriter()
     {
-        if ($this->_writer===null) {
+        if ($this->_writer === null) {
             $class = $this->writerClass;
             $this->_writer = new $class($this->getWorkbook());
         }
@@ -46,7 +48,7 @@ class ExcelFile extends Object
      */
     public function getWorkbook()
     {
-        if ($this->_workbook===null) {
+        if ($this->_workbook === null) {
             $this->_workbook = new \PHPExcel();
         }
         return $this->_workbook;
@@ -57,7 +59,7 @@ class ExcelFile extends Object
      */
     public function getTmpFile()
     {
-        if ($this->_tmpFile===null) {
+        if ($this->_tmpFile === null) {
             $suffix = isset($this->fileOptions['suffix']) ? $this->fileOptions['suffix'] : null;
             $prefix = isset($this->fileOptions['prefix']) ? $this->fileOptions['prefix'] : null;
             $directory = isset($this->fileOptions['directory']) ? $this->fileOptions['directory'] : null;
@@ -75,9 +77,9 @@ class ExcelFile extends Object
     }
 
     /**
-     * @param array $value the sheet configuration. This must be an array where keys
-     * are sheet names and values are arrays with the configuration options for an
-     * instance if `ExcelSheet`.
+     * @param array $value the sheet configuration. This must be an array where
+     * keys are sheet names and values are arrays with the configuration
+     * options for an instance if `ExcelSheet`.
      */
     public function setSheets($value)
     {
@@ -99,8 +101,10 @@ class ExcelFile extends Object
     /**
      * Send the Excel file for download
      *
-     * @param string|null $filename the filename to send. If empty, the file is streamed inline.
-     * @param bool $inline whether to force inline display of the file, even if filename is present.
+     * @param string|null $filename the filename to send. If empty, the file is
+     * streamed inline.
+     * @param bool $inline whether to force inline display of the file, even if
+     * filename is present.
      */
     public function send($filename = null, $inline = false)
     {
@@ -126,7 +130,9 @@ class ExcelFile extends Object
                 } elseif (!is_object($config)) {
                     throw new \Exception('Invalid sheet configuration');
                 }
-                $sheet = (0===$i++) ? $workbook->getActiveSheet() : $workbook->createSheet();
+                $i++;
+                $sheet = ($i === 0) ?
+                    $workbook->getActiveSheet() : $workbook->createSheet();
                 if (is_string($title)) {
                     $sheet->setTitle($title);
                 }

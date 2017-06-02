@@ -52,8 +52,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return string[]|null|false the column titles indexed by 0-based column index.
-     * If empty, `null` or `false`, no titles will be generated.
+     * @return string[]|null|false the column titles indexed by 0-based column
+     * index.  If empty, `null` or `false`, no titles will be generated.
      */
     public function getTitles()
     {
@@ -61,8 +61,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null|false $value the column titles indexed by 0-based column index.
-     * If empty or `false`, no titles will be generated.
+     * @param string[]|null|false $value the column titles indexed by 0-based
+     * column index.  If empty or `false`, no titles will be generated.
      */
     public function setTitles($value)
     {
@@ -70,9 +70,10 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return string[]|null the types for the column cells indexed by 0-based column index. See the
-     * `PHPExcel_Cell_DataType::TYPE_*` constants for available types. If no type is set for a column,
-     * PHPExcel will autodetect the correct type.
+     * @return string[]|null the types for the column cells indexed by 0-based
+     * column index. See the `PHPExcel_Cell_DataType::TYPE_*` constants for
+     * available types. If no type is set for a column, PHPExcel will
+     * autodetect the correct type.
      */
     public function getTypes()
     {
@@ -80,7 +81,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null $value the types for the column cells indexed by 0-based column index
+     * @param string[]|null $value the types for the column cells indexed by
+     * 0-based column index
      */
     public function setTypes($value)
     {
@@ -88,7 +90,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return string[]|null the format strings for the column cells indexed by 0-based column index
+     * @return string[]|null the format strings for the column cells indexed by
+     * 0-based column index
      */
     public function getFormats()
     {
@@ -96,7 +99,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null $value the format strings for the column cells indexed by 0-based column index
+     * @param string[]|null $value the format strings for the column cells
+     * indexed by 0-based column index
      */
     public function setFormats($value)
     {
@@ -104,9 +108,10 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return Callable[]|null the value formatters for the column cells indexed by 0-based column index.
-     * The function signature is `function ($value, $row, $data)` where `$value` is the cell value, `$row`
-     * is the row index and `$data` is the row data.
+     * @return Callable[]|null the value formatters for the column cells
+     * indexed by 0-based column index.  The function signature is `function
+     * ($value, $row, $data)` where `$value` is the cell value, `$row` is the
+     * row index and `$data` is the row data.
      */
     public function getFormatters()
     {
@@ -114,7 +119,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param Callable[]|null $value the value formatters for the column cells indexed by 0-based column index
+     * @param Callable[]|null $value the value formatters for the column cells
+     * indexed by 0-based column index
      */
     public function setFormatters($value)
     {
@@ -122,9 +128,10 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return Callable[]|null column callbacks indexed by 0-based column index that get called after rendering a cell.
-     * The function signature is `function ($cell, $column, $row)` where `$cell` is the `PHPExcel_Cell` object and
-     * `$row` and `$column` are the row and column index.
+     * @return Callable[]|null column callbacks indexed by 0-based column index
+     * that get called after rendering a cell.  The function signature is
+     * `function ($cell, $column, $row)` where `$cell` is the `PHPExcel_Cell`
+     * object and `$row` and `$column` are the row and column index.
      */
     public function getCallbacks()
     {
@@ -132,7 +139,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param Callable[]|null $value callbacks that get called after rendering a column cell indexed by 0-based column index.
+     * @param Callable[]|null $value callbacks that get called after rendering
+     * a column cell indexed by 0-based column index.
      */
     public function setCallbacks($value)
     {
@@ -200,19 +208,22 @@ class ExcelSheet extends Object
                 $this->_sheet->setCellValueByColumnAndRow($i, $row, $value);
             }
             if (isset($formats[$i])) {
-                $this->_sheet->getStyleByColumnAndRow($i, $row)
+                $this->_sheet
+                    ->getStyleByColumnAndRow($i, $row)
                     ->getNumberFormat()
                     ->setFormatCode($formats[$i]);
             }
             if (isset($callbacks[$i]) && is_callable($callbacks[$i])) {
-                call_user_func($callbacks[$i], $this->_sheet->getCellByColumnAndRow($i, $row), $i, $row);
+                $cell = $this->_sheet->getCellByColumnAndRow($i, $row);
+                call_user_func($callbacks[$i], $cell, $i, $row);
             }
         }
     }
 
     /**
      * @param array $data
-     * @return array the array with alphanumeric column keys (A, B, C, ...) converted to numeric indices
+     * @return array the array with alphanumeric column keys (A, B, C, ...)
+     * converted to numeric indices
      */
     protected static function normalizeIndex($data)
     {
