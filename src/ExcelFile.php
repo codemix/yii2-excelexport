@@ -133,13 +133,13 @@ class ExcelFile extends Object
                 } elseif (!is_object($config)) {
                     throw new \Exception('Invalid sheet configuration');
                 }
-                $i++;
                 $sheet = ($i === 0) ?
                     $workbook->getActiveSheet() : $workbook->createSheet();
                 if (is_string($title)) {
                     $sheet->setTitle($title);
                 }
                 Yii::createObject($config, [$sheet])->render();
+                $i++;
             }
             $this->_sheetsCreated = true;
         }
