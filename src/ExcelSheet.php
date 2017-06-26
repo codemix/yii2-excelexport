@@ -14,6 +14,7 @@ class ExcelSheet extends Object
     protected $_types;
     protected $_formats;
     protected $_formatters;
+    protected $_styles = [];
     protected $_callbacks;
     protected $_row = 1;
 
@@ -61,7 +62,7 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null|false $value the column titles indexed by 0-based
+     * @param string[]|null|false $value the column titles indexed by 1-based
      * column index.  If empty or `false`, no titles will be generated.
      */
     public function setTitles($value)
@@ -128,6 +129,24 @@ class ExcelSheet extends Object
     }
 
     /**
+     * @return array style configuration arrays indexed by cell coordinate or
+     * cell range, e.g. `A1:Z1000`.
+     */
+    public function getStyles()
+    {
+        return $this->_styles;
+    }
+
+    /**
+     * @param array $value style configuration arrays indexed by cell
+     * coordinate or cell range, e.g. `A1:Z1000`.
+     */
+    public function setStyles($value)
+    {
+        $this->_styles = $value;
+    }
+
+    /**
      * @return Callable[]|null column callbacks indexed by 0-based column index
      * that get called after rendering a cell.  The function signature is
      * `function ($cell, $column, $row)` where `$cell` is the `PHPExcel_Cell`
@@ -152,8 +171,19 @@ class ExcelSheet extends Object
      */
     public function render()
     {
+        $this->renderStyles();
         $this->renderTitle();
         $this->renderRows();
+    }
+
+    /**
+     * Render styles
+     */
+    protected function renderStyles()
+    {
+        foreach ($this->getStyles() as $i => $style) {
+            $this->_sheet->getStyle($i)->applyFromArray($style);
+        }
     }
 
     /**

@@ -69,7 +69,8 @@ Property | Description
 `types` (optional) | An array of types for specific columns as supported by PHPOffice, e.g. `\PHPExcel_Cell_DataType::TYPE_STRING`, indexed either by column name (e.g. `H`) or 0-based column index.
 `formats` (optional) | An array of format strings for specific columns as supported by Excel, e.g. `#,##0.00`, indexed either by column name (e.g. `H`) or 0-based column index.
 `formatters` (optional) | An array of value formatters for specific columns. Each must be a valid PHP callable whith the signature `function formatter($value, $row, $data)` where `$value` is the cell value to format, `$row` is the 0-based row index and `$data` is the current row data from the `data` configuration. The callbacks must be indexed either by column name (e.g. `H`) or by the 0-based column index.
-`callbacks` (optional) | An array of callbacks for specific columns that should be called after rendering a cell, e.g. to apply some styling. Each must be a valid PHP callable with the signature `function callback($cell, $col, $row)` where `$cell` is the current `PHPExcel_Cell` object and `$col` and `$row` are the 0-based column and row indices respectively.
+`styles` (optional) | An array of style configuration indexed by cell coordinates or a range.
+`callbacks` (optional) | An array of callbacks indexed by column that should be called after rendering a cell, e.g. to apply further complex styling. Each must be a valid PHP callable with the signature `function callback($cell, $col, $row)` where `$cell` is the current `PHPExcel_Cell` object and `$col` and `$row` are the 0-based column and row indices respectively.
 
 ### ActiveExcelSheet
 
@@ -193,9 +194,9 @@ $file->send('demo.xlsx');
 
 ### Styling
 
-As you have access to the `PHPExcel` object you can modify the excel file as you like.
-For details please consult the
-[PHPExcel documentation](https://github.com/PHPOffice/PHPExcel/tree/develop/Documentation/markdown/Overview).
+Since version 2.3.0 you can style single cells and cell ranges via the `styles`
+property of a sheet. For details on the accepted styling format please consult the
+[PHPExcel documentation](https://github.com/PHPOffice/PHPExcel/blob/develop/Documentation/markdown/Overview/08-Recipes.md#styles).
 
 ```php
 <?php
@@ -205,15 +206,39 @@ $file = \Yii::createObject([
         'Users' => [
             'class' => 'codemix\excelexport\ActiveExcelSheet',
             'query' => User::find(),
+            'styles' => [
+                'A1:Z1000' => [
+                    'font' => [
+                        'bold' => true,
+                        'color' => ['rgb' => 'FF0000'],
+                        'size' => 15,
+                        'name' => 'Verdana'
+                    ]
+                    'alignment' => [
+                        'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                    ],
+                ],
+            ],
         ]
     ]
 ]);
-$phpExcel = $file->getWorkbook();
-$phpExcel->getSheet(1)->getStyle('B1')
-    ->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_RED);
 ```
 
-Alternatively you can use the callback feature from our `ExcelSheet`:
+As you have access to the `PHPExcel` object you can also "manually" modify the excel file as you like.
+
+
+```php
+<?php
+$file
+    ->getWorkbook();
+    ->getSheet(1)
+    ->getStyle('B1')
+    ->getFont()
+    ->getColor()
+    ->setARGB(\PHPExcel_Style_Color::COLOR_RED);
+```
+
+Alternatively you can also use the callback feature from our `ExcelSheet`:
 
 ```php
 <?php
@@ -254,4 +279,5 @@ $file = \Yii::createObject([
         ],
     ],
 ]);
+```
 
