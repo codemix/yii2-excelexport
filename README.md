@@ -20,7 +20,7 @@ To write the Excel file, we use the excellent [PHPExcel](https://github.com/PHPO
 
 Install the package with [composer](http://getcomposer.org):
 
-    composer require codemix/yii2-excelexport *
+    composer require codemix/yii2-excelexport
 
 ## Quickstart example
 
