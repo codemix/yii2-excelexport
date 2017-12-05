@@ -71,6 +71,8 @@ Property | Description
 `formatters` (optional) | An array of value formatters for specific columns. Each must be a valid PHP callable whith the signature `function formatter($value, $row, $data)` where `$value` is the cell value to format, `$row` is the 0-based row index and `$data` is the current row data from the `data` configuration. The callbacks must be indexed either by column name (e.g. `H`) or by the 0-based column index.
 `styles` (optional) | An array of style configuration indexed by cell coordinates or a range.
 `callbacks` (optional) | An array of callbacks indexed by column that should be called after rendering a cell, e.g. to apply further complex styling. Each must be a valid PHP callable with the signature `function callback($cell, $col, $row)` where `$cell` is the current `PHPExcel_Cell` object and `$col` and `$row` are the 0-based column and row indices respectively.
+`startColumn` (optional) | The start column name or its 0-based index. When this is set, the 0-based offset is added to all numeric keys used anywhere in this class. Columns referenced by name will stay unchanged.  Default is 'A'.
+`startRow` (optional) | The start row. Default is 1.
 
 ### ActiveExcelSheet
 

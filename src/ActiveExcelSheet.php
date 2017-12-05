@@ -132,8 +132,8 @@ class ActiveExcelSheet extends ExcelSheet
     {
         if ($this->_formats === null) {
             $this->_formats = [];
-            $attrs = $this->getAttributes();
-            $types = $this->getColumnTypes();
+            $attrs = $this->normalizeIndex($this->getAttributes());
+            $types = $this->normalizeIndex($this->getColumnTypes());
             foreach ($attrs as $c => $attr) {
                 switch ($types[$c]->type) {
                     case 'date':
@@ -182,8 +182,8 @@ class ActiveExcelSheet extends ExcelSheet
     {
         if ($this->_formatters === null) {
             $this->_formatters = [];
-            $attrs = $this->getAttributes();
-            $types = $this->getColumnTypes();
+            $attrs = $this->normalizeIndex($this->getAttributes());
+            $types = $this->normalizeIndex($this->getColumnTypes());
             foreach ($attrs as $c => $attr) {
                 switch ($types[$c]->type) {
                     case 'date':
@@ -251,7 +251,6 @@ class ActiveExcelSheet extends ExcelSheet
             $this->_columnTypes = array_map(function ($attr) use ($model) {
                 return self::getType($model, $attr);
             }, $this->getAttributes());
-
         }
         return $this->_columnTypes;
     }
@@ -275,9 +274,9 @@ class ActiveExcelSheet extends ExcelSheet
      * from DB to application timezone.
      *
      * @param string $value the datetime value
-     * @return int timezone offset in seconds
-     * @see [[yii\i18n\Formatter::defaultTimeZone]]
-     * @see [[yii\base\Application::timeZone]]
+     * @return int timezone offset in seconds 
+     * @see [[yii\i18n\Formatter::defaultTimezone]]
+     * @see [[yii\i18n\Formatter::timezone]]
      */
     protected function toExcelTime($value)
     {

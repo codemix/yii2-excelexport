@@ -8,6 +8,19 @@ use yii\base\Object;
  */
 class ExcelSheet extends Object
 {
+    /**
+     * @var int|string the start column name or its 0-based index. When this is
+     * set, the 0-based offset is added to all numeric keys used anywhere in
+     * this class. Columns referenced by name will stay unchanged.  Default is
+     * 'A'.
+     */
+    public $startColumn = 'A';
+
+    /**
+     * @var int the start row. Default is 1.
+     */
+    public $startRow = 1;
+
     protected $_sheet;
     protected $_data;
     protected $_titles;
@@ -16,7 +29,7 @@ class ExcelSheet extends Object
     protected $_formatters;
     protected $_styles = [];
     protected $_callbacks;
-    protected $_row = 1;
+    protected $_row;
 
     /**
      * @param PHPExcel_WorkSheet $sheet
@@ -53,8 +66,8 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @return string[]|null|false the column titles indexed by 0-based column
-     * index.  If empty, `null` or `false`, no titles will be generated.
+     * @return string[]|null|false the column titles indexed by column name or
+     * 0-based index. If empty, `null` or `false`, no titles will be generated.
      */
     public function getTitles()
     {
@@ -62,7 +75,7 @@ class ExcelSheet extends Object
     }
 
     /**
-     * @param string[]|null|false $value the column titles indexed by 1-based
+     * @param string[]|null|false $value the column titles indexed by 0-based
      * column index.  If empty or `false`, no titles will be generated.
      */
     public function setTitles($value)
@@ -171,6 +184,7 @@ class ExcelSheet extends Object
      */
     public function render()
     {
+        $this->_row = $this->startRow;
         $this->renderStyles();
         $this->renderTitle();
         $this->renderRows();
@@ -191,9 +205,10 @@ class ExcelSheet extends Object
      */
     protected function renderTitle()
     {
-        $titles = $this->getTitles();
+        $titles = $this->normalizeIndex($this->getTitles());
         if ($titles) {
-            $col = 0;
+            $keys = array_keys($titles);
+            $col = array_shift($keys);
             foreach ($titles as $title) {
                 $this->_sheet->setCellValueByColumnAndRow($col++, $this->_row, $title);
             }
@@ -206,10 +221,10 @@ class ExcelSheet extends Object
      */
     protected function renderRows()
     {
-        $formats = self::normalizeIndex($this->getFormats());
-        $formatters = self::normalizeIndex($this->getFormatters());
-        $callbacks = self::normalizeIndex($this->getCallbacks());
-        $types = self::normalizeIndex($this->getTypes());
+        $formats = $this->normalizeIndex($this->getFormats());
+        $formatters = $this->normalizeIndex($this->getFormatters());
+        $callbacks = $this->normalizeIndex($this->getCallbacks());
+        $types = $this->normalizeIndex($this->getTypes());
 
         foreach ($this->getData() as $data) {
             $this->renderRow($data, $this->_row++, $formats, $formatters, $callbacks, $types);
@@ -229,41 +244,56 @@ class ExcelSheet extends Object
     protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
         foreach (array_values($data) as $i => $value) {
-            if (isset($formatters[$i]) && is_callable($formatters[$i])) {
-                $value = call_user_func($formatters[$i], $value, $row, $data);
+            $col = $i + self::normalizeColumn($this->startColumn);
+            if (isset($formatters[$col]) && is_callable($formatters[$col])) {
+                $value = call_user_func($formatters[$col], $value, $row, $data);
             }
-            if (isset($types[$i])) {
-                $this->_sheet->setCellValueExplicitByColumnAndRow($i, $row, $value, $types[$i]);
+            if (isset($types[$col])) {
+                $this->_sheet->setCellValueExplicitByColumnAndRow($col, $row, $value, $types[$col]);
             } else {
-                $this->_sheet->setCellValueByColumnAndRow($i, $row, $value);
+                $this->_sheet->setCellValueByColumnAndRow($col, $row, $value);
             }
-            if (isset($formats[$i])) {
+            if (isset($formats[$col])) {
                 $this->_sheet
-                    ->getStyleByColumnAndRow($i, $row)
+                    ->getStyleByColumnAndRow($col, $row)
                     ->getNumberFormat()
-                    ->setFormatCode($formats[$i]);
+                    ->setFormatCode($formats[$col]);
             }
-            if (isset($callbacks[$i]) && is_callable($callbacks[$i])) {
-                $cell = $this->_sheet->getCellByColumnAndRow($i, $row);
-                call_user_func($callbacks[$i], $cell, $i, $row);
+            if (isset($callbacks[$col]) && is_callable($callbacks[$col])) {
+                $cell = $this->_sheet->getCellByColumnAndRow($col, $row);
+                call_user_func($callbacks[$col], $cell, $col, $row);
             }
         }
     }
 
     /**
-     * @param array $data
+     * @param array $data any data indexed by 0-based colum index or by column name.
      * @return array the array with alphanumeric column keys (A, B, C, ...)
      * converted to numeric indices
      */
-    protected static function normalizeIndex($data)
+    protected function normalizeIndex($data)
     {
         if (!is_array($data)) {
             return $data;
         }
         $result = [];
         foreach ($data as $k => $v) {
-            $result[is_string($k) ? \PHPExcel_Cell::columnIndexFromString($k)-1 : $k] = $v;
+            $result[self::normalizeColumn($k)] = $v;
         }
         return $result;
+    }
+
+    /**
+     * @param int|string $column the column either as int or as string. If
+     * numeric, the startColumn offset will be added.
+     * @return int the normalized numeric column index (0-based).
+     */
+    public function normalizeColumn($column)
+    {
+        if (is_string($column)) {
+            return \PHPExcel_Cell::columnIndexFromString($column) - 1;
+        } else {
+            return $column + self::normalizeColumn($this->startColumn);
+        }
     }
 }
