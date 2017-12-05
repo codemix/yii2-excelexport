@@ -88,6 +88,13 @@ Property | Description
 `dateTimeFormat` | The excel format to use for `datetime` DB types. Default is `dd/mm/yyyy hh:mm:ss`.
 `batchSize` | The query batchsize to use. Default is `100`.
 
+> **Note** Since version 2.3.1 datetime attributes will automatically be
+> converted to the correct timezone. This feature makes use of the current
+> [defaultTimeZone](http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#$defaultTimeZone-detail)
+> and
+> [timeZone](http://www.yiiframework.com/doc-2.0/yii-base-application.html#getTimeZone()-detail)
+> setting of the app.
+
 ## Examples
 
 ### ActiveQuery results
