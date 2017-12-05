@@ -1,6 +1,7 @@
 <?php
 namespace codemix\excelexport;
 
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -186,12 +187,29 @@ class ActiveExcelSheet extends ExcelSheet
             foreach ($attrs as $c => $attr) {
                 switch ($types[$c]->type) {
                     case 'date':
+                        $this->_formatters[$c] = function ($v) {
+                            if (empty($v)) {
+                                return null;
+                            } else {
+                                // Set the correct timezone before converting to a UNIX timestamp.
+                                // This prevents dates from being altered due to timezone
+                                // conversion, e.g.
+                                // '2017-12-05 00:00:00' could become
+                                // '2017-12-04 23:00:00'
+                                $timezone = date_default_timezone_get();
+                                date_default_timezone_set(Yii::$app->formatter->defaultTimeZone);
+                                $timestamp = strtotime($v);
+                                date_default_timezone_set($timezone);
+                                return \PHPExcel_Shared_Date::PHPToExcel($timestamp);
+                            }
+                        };
+                        break;
                     case 'datetime':
                         $this->_formatters[$c] = function ($v) {
                             if (empty($v)) {
                                 return null;
                             } else {
-                                return \PHPExcel_Shared_Date::PHPToExcel(strtotime($v));
+                                return \PHPExcel_Shared_Date::PHPToExcel($this->toExcelTime($v));
                             }
                         };
                         break;
@@ -247,6 +265,43 @@ class ActiveExcelSheet extends ExcelSheet
             return ArrayHelper::getValue($data, $attr);
         }, $this->getAttributes());
         return parent::renderRow($values, $row, $formats, $formatters, $callbacks, $types);
+    }
+
+    /**
+     * Convert a datetime to the right excel timestamp
+     *
+     * This method will use [[\yii\i18n\Formatter::defaultTimeZone]] and
+     * [[\yii\base\Application::timeZone]] to convert the given datetime
+     * from DB to application timezone.
+     *
+     * @param string $value the datetime value
+     * @return int timezone offset in seconds
+     * @see [[yii\i18n\Formatter::defaultTimeZone]]
+     * @see [[yii\base\Application::timeZone]]
+     */
+    protected function toExcelTime($value)
+    {
+        // "Cached" timezone instances
+        static $defaultTimezone;
+        static $timezone;
+
+        if (Yii::$app->formatter->defaultTimeZone === Yii::$app->timeZone) {
+            return strtotime($value);
+        } else {
+            if ($timezone === null) {
+                $defaultTimezone = new \DateTimeZone(Yii::$app->formatter->defaultTimeZone);
+                $timezone = new \DateTimeZone(Yii::$app->timeZone);
+            }
+
+            // Offset can depend on given datetime due to DST
+            $defaultDatetime = new \DateTime($value, $defaultTimezone);
+            $offset = $timezone->getOffset($defaultDatetime);
+
+            // PHPExcel_Shared_Date::PHPToExcel() method expects a
+            // "pseudo-timestamp": Something like a UNIX timestamp but
+            // including local timezone offset.
+            return $defaultDatetime->getTimestamp() + $offset;
+        }
     }
 
     /**
