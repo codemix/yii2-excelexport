@@ -188,7 +188,11 @@ class ActiveExcelSheet extends ExcelSheet
                     case 'date':
                     case 'datetime':
                         $this->_formatters[$c] = function ($v) {
-                            return \PHPExcel_Shared_Date::PHPToExcel(strtotime($v));
+                            if (empty($v)) {
+                                return null;
+                            } else {
+                                return \PHPExcel_Shared_Date::PHPToExcel(strtotime($v));
+                            }
                         };
                         break;
                 }
