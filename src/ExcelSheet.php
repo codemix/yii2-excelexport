@@ -1,13 +1,16 @@
 <?php
 namespace codemix\excelexport;
 
-use yii\base\Object;
+use yii\base\Component;
 
 /**
  * An excel worksheet
  */
-class ExcelSheet extends Object
+class ExcelSheet extends Component
 {
+    const EVENT_BEFORE_RENDER = 'beforeRender';
+    const EVENT_AFTER_RENDER = 'afterRender';
+
     /**
      * @var int|string the start column name or its 0-based index. When this is
      * set, the 0-based offset is added to all numeric keys used anywhere in
@@ -184,10 +187,28 @@ class ExcelSheet extends Object
      */
     public function render()
     {
+        $this->beforeRender();
         $this->_row = $this->startRow;
         $this->renderStyles();
         $this->renderTitle();
         $this->renderRows();
+        $this->trigger(self::EVENT_AFTER_RENDER);
+    }
+
+    /**
+     * Trigger the [[EVENT_BEFORE_RENDER]] event
+     */
+    public function beforeRender()
+    {
+        $this->trigger(self::EVENT_BEFORE_RENDER);
+    }
+
+    /**
+     * Trigger the [[EVENT_AFTER_RENDER]] event
+     */
+    public function afterRender()
+    {
+        $this->trigger(self::EVENT_AFTER_RENDER);
     }
 
     /**

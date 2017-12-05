@@ -74,6 +74,13 @@ Property | Description
 `startColumn` (optional) | The start column name or its 0-based index. When this is set, the 0-based offset is added to all numeric keys used anywhere in this class. Columns referenced by name will stay unchanged.  Default is 'A'.
 `startRow` (optional) | The start row. Default is 1.
 
+
+Event | Description
+---------|-------------
+`beforeRender` | Triggered before the sheet is rendered. The sheet is available via `$event->source->getSheet()`.
+`afterRender` | Triggered after the sheet was rendered. The sheet is available via `$event->source->getSheet()`.
+
+
 ### ActiveExcelSheet
 
 The class extends from `ExcelSheet` but differs in the following properties:
@@ -290,3 +297,24 @@ $file = \Yii::createObject([
 ]);
 ```
 
+### Events
+
+Since version 2.3.5 there are new events which make it easier to further modify each sheet.
+
+```php
+<?php
+$file = \Yii::createObject([
+    'class' => 'codemix\excelexport\ExcelFile',
+    'sheets' => [
+        'Users' => [
+            'class' => 'codemix\excelexport\ActiveExcelSheet',
+            'query' => User::find(),
+            'startRow' => 3,
+            'on beforeRender' => function ($event) {
+                $sheet = $event->source->getSheet();
+                $sheet->setCellValue('A1', 'List of current users');
+            }
+        ],
+    ],
+]);
+```
