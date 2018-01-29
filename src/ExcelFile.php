@@ -2,14 +2,14 @@
 namespace codemix\excelexport;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use mikehaertl\tmp\File;
 
 /**
  * This class represents an excel file.
  */
-class ExcelFile extends Object
+class ExcelFile extends BaseObject
 {
     /**
      * @var string the writer class to use. Default is

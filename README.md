@@ -6,6 +6,8 @@ Yii2 Excel Export
 [![Latest Unstable Version](https://poser.pugx.org/codemix/yii2-excelexport/v/unstable)](https://packagist.org/packages/codemix/yii2-excelexport)
 [![License](https://poser.pugx.org/codemix/yii2-excelexport/license)](https://packagist.org/packages/codemix/yii2-excelexport)
 
+> **Note:** The minimum requirement since 2.6.0 is Yii 2.0.13. The latest
+> version for older Yii releases is 2.5.0.
 
 ## Features
 
