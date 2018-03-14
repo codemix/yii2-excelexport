@@ -98,6 +98,7 @@ Property | Description
 `dateFormat` | The excel format to use for `date` DB types. Default is `dd/mm/yyyy`.
 `dateTimeFormat` | The excel format to use for `datetime` DB types. Default is `dd/mm/yyyy hh:mm:ss`.
 `batchSize` | The query batchsize to use. Default is `100`.
+`modelInstance` (optional) | The query's `modelClass` instance used to obtain attribute types and titles. If not set an instance of the query's `modelClass` is created automatically.
 
 > **Note** Since version 2.3.1 datetime attributes will automatically be
 > converted to the correct timezone. This feature makes use of the current

@@ -28,6 +28,7 @@ class ActiveExcelSheet extends ExcelSheet
     protected $_query;
     protected $_attributes;
     protected $_columnTypes;
+    protected $_modelInstance;
 
     /**
      * @return yii\db\ActiveQuery the query for the sheet data
@@ -64,9 +65,7 @@ class ActiveExcelSheet extends ExcelSheet
     public function getAttributes()
     {
         if ($this->_attributes === null) {
-            $class = $this->getQuery()->modelClass;
-            $model = new $class;
-            $this->_attributes = $model->attributes();
+            $this->_attributes = $this->getModelInstance()->attributes();
         }
         return $this->_attributes;
     }
@@ -94,8 +93,7 @@ class ActiveExcelSheet extends ExcelSheet
     public function getTitles()
     {
         if ($this->_titles === null) {
-            $class = $this->getQuery()->modelClass;
-            $model = new $class;
+            $model = $this->getModelInstance();
             $this->_titles = array_map(function ($a) use ($model) {
                 return $model->getAttributeLabel($a);
             }, $this->getAttributes());
@@ -240,14 +238,46 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
+     * @return yii\db\ActiveRecord an instance of the main model on which the
+     * query is performed on. This is used to obtain column titles and types.
+     */
+    public function getModelInstance()
+    {
+        if ($this->_modelInstance === null) {
+            $class = $this->getQuery()->modelClass;
+            $this->_modelInstance = new $class;
+        }
+        return $this->_modelInstance;
+    }
+
+    /**
+     * @param yii\db\ActiveRecord $model an instance of the main model on which
+     * the query is performed on. This is used to obtain column titles and
+     * types.
+     */
+    public function setModelInstance($model)
+    {
+        $this->_modelInstance = $model;
+    }
+
+    /**
+     * @return yii\db\ActiveRecord a new instance of a related model for the
+     * given model. This is used to obtain column types.
+     */
+    protected function getRelatedModelInstance($model, $name)
+    {
+        $class = $model->getRelation($name)->modelClass;
+        return new $class;
+    }
+
+    /**
      * @return yii\db\ColumnSchema[] the DB column types `ColumnSchema::$type`
      * indexed by 0-based column index
      */
     protected function getColumnTypes()
     {
         if ($this->_columnTypes === null) {
-            $class = $this->getQuery()->modelClass;
-            $model = new $class;
+            $model = $this->getModelInstance();
             $this->_columnTypes = array_map(function ($attr) use ($model) {
                 return self::getType($model, $attr);
             }, $this->getAttributes());
@@ -330,8 +360,7 @@ class ActiveExcelSheet extends ExcelSheet
             $attribute = substr($attribute, $pos + 1);
         }
         if ($isRelation) {
-            $class = $model->getRelation($attribute)->modelClass;
-            return new $class;
+            return $this->getRelatedModelInstance($model, $attribute);
         } else {
             return $model->getTableSchema()->columns[$attribute];
         }
