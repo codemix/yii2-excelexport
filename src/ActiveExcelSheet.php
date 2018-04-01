@@ -264,7 +264,7 @@ class ActiveExcelSheet extends ExcelSheet
      * @return yii\db\ActiveRecord a new instance of a related model for the
      * given model. This is used to obtain column types.
      */
-    protected function getRelatedModelInstance($model, $name)
+    protected static function getRelatedModelInstance($model, $name)
     {
         $class = $model->getRelation($name)->modelClass;
         return new $class;
@@ -360,7 +360,7 @@ class ActiveExcelSheet extends ExcelSheet
             $attribute = substr($attribute, $pos + 1);
         }
         if ($isRelation) {
-            return $this->getRelatedModelInstance($model, $attribute);
+            return self::getRelatedModelInstance($model, $attribute);
         } else {
             return $model->getTableSchema()->columns[$attribute];
         }
