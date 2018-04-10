@@ -79,8 +79,8 @@ Property | Description
 
 Event | Description
 ---------|-------------
-`beforeRender` | Triggered before the sheet is rendered. The sheet is available via `$event->source->getSheet()`.
-`afterRender` | Triggered after the sheet was rendered. The sheet is available via `$event->source->getSheet()`.
+`beforeRender` | Triggered before the sheet is rendered. The sheet is available via `$event->sender->getSheet()`.
+`afterRender` | Triggered after the sheet was rendered. The sheet is available via `$event->sender->getSheet()`.
 
 
 ### ActiveExcelSheet
@@ -302,7 +302,7 @@ $file = \Yii::createObject([
 
 ### Events
 
-Since version 2.3.5 there are new events which make it easier to further modify each sheet.
+Since version 2.5.0 there are new events which make it easier to further modify each sheet.
 
 ```php
 <?php
@@ -314,7 +314,7 @@ $file = \Yii::createObject([
             'query' => User::find(),
             'startRow' => 3,
             'on beforeRender' => function ($event) {
-                $sheet = $event->source->getSheet();
+                $sheet = $event->sender->getSheet();
                 $sheet->setCellValue('A1', 'List of current users');
             }
         ],
