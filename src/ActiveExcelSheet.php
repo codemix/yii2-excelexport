@@ -27,7 +27,7 @@ class ActiveExcelSheet extends ExcelSheet
 
     protected $_query;
     protected $_attributes;
-    protected $_columnTypes;
+    protected $_columnSchemas;
     protected $_modelInstance;
 
     /**
@@ -131,9 +131,12 @@ class ActiveExcelSheet extends ExcelSheet
         if ($this->_formats === null) {
             $this->_formats = [];
             $attrs = $this->normalizeIndex($this->getAttributes());
-            $types = $this->normalizeIndex($this->getColumnTypes());
+            $schemas = $this->normalizeIndex($this->getColumnSchemas());
             foreach ($attrs as $c => $attr) {
-                switch ($types[$c]->type) {
+                if (!isset($schemas[$c])) {
+                    continue;
+                }
+                switch ($schemas[$c]->type) {
                     case 'date':
                         $this->_formats[$c] = $this->dateFormat;
                         break;
@@ -141,8 +144,8 @@ class ActiveExcelSheet extends ExcelSheet
                         $this->_formats[$c] = $this->dateTimeFormat;
                         break;
                     case 'decimal':
-                        $decimals = str_pad('#,', $types[$c]->scale, '#');
-                        $zeroPad = str_pad('0.', $types[$c]->scale, '0');
+                        $decimals = str_pad('#,', $schemas[$c]->scale, '#');
+                        $zeroPad = str_pad('0.', $schemas[$c]->scale, '0');
                         $this->_formats[$c] = $decimals.$zeroPad;
                         break;
                 }
@@ -181,9 +184,12 @@ class ActiveExcelSheet extends ExcelSheet
         if ($this->_formatters === null) {
             $this->_formatters = [];
             $attrs = $this->normalizeIndex($this->getAttributes());
-            $types = $this->normalizeIndex($this->getColumnTypes());
+            $schemas = $this->normalizeIndex($this->getColumnSchemas());
             foreach ($attrs as $c => $attr) {
-                switch ($types[$c]->type) {
+                if (!isset($schemas[$c])) {
+                    continue;
+                }
+                switch ($schemas[$c]->type) {
                     case 'date':
                         $this->_formatters[$c] = function ($v) {
                             if (empty($v)) {
@@ -271,18 +277,20 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return yii\db\ColumnSchema[] the DB column types `ColumnSchema::$type`
-     * indexed by 0-based column index
+     * @return yii\db\ColumnSchema[] the DB column schemas indexed by 0-based
+     * column index. This only includes columns for which a DB schema exists.
      */
-    protected function getColumnTypes()
+    protected function getColumnSchemas()
     {
-        if ($this->_columnTypes === null) {
+        if ($this->_columnSchemas === null) {
             $model = $this->getModelInstance();
-            $this->_columnTypes = array_map(function ($attr) use ($model) {
-                return self::getType($model, $attr);
+            $schemas = array_map(function ($attr) use ($model) {
+                return self::getSchema($model, $attr);
             }, $this->getAttributes());
+            // Filter out null values
+            $this->_columnSchemas = array_filter($schemas);
         }
-        return $this->_columnTypes;
+        return $this->_columnSchemas;
     }
 
     /**
@@ -350,19 +358,21 @@ class ActiveExcelSheet extends ExcelSheet
      * @param mixed $isRelation whether the name specifies a relation, in which
      * case an `ActiveRecord` is returned. Default is `false`, which returns a
      * `ColumnSchema`.
-     * @return yii\db\ColumnSchema|yii\db\ActiveRecord the type instance of the
-     * attribute
+     * @return yii\db\ColumnSchema|yii\db\ActiveRecord|null the type instance
+     * of the attribute or `null` if the attribute is not a DB column (e.g.
+     * public property or defined by getter)
      */
-    public static function getType($model, $attribute, $isRelation = false)
+    public static function getSchema($model, $attribute, $isRelation = false)
     {
         if (($pos = strrpos($attribute, '.')) !== false) {
-            $model = self::getType($model, substr($attribute, 0, $pos), true);
+            $model = self::getSchema($model, substr($attribute, 0, $pos), true);
             $attribute = substr($attribute, $pos + 1);
         }
         if ($isRelation) {
             return self::getRelatedModelInstance($model, $attribute);
         } else {
-            return $model->getTableSchema()->columns[$attribute];
+            $columnSchemas = $model->getTableSchema()->columns;
+            return isset($columnSchemas[$attribute]) ? $columnSchemas[$attribute] : null;
         }
     }
 }
