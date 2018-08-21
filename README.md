@@ -248,6 +248,8 @@ As you have access to the `PHPExcel` object you can also "manually" modify the e
 
 ```php
 <?php
+// Create the actual workbook and sheets
+$file->createSheets();
 $file
     ->getWorkbook();
     ->getSheet(1)
@@ -255,6 +257,7 @@ $file
     ->getFont()
     ->getColor()
     ->setARGB(\PHPExcel_Style_Color::COLOR_RED);
+$file->send();
 ```
 
 Alternatively you can also use the callback feature from our `ExcelSheet`:
