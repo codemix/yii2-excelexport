@@ -232,7 +232,7 @@ $file = \Yii::createObject([
                         'color' => ['rgb' => 'FF0000'],
                         'size' => 15,
                         'name' => 'Verdana'
-                    ]
+                    ],
                     'alignment' => [
                         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
                     ],
