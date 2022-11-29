@@ -312,7 +312,7 @@ class ExcelSheet extends Component
     public function normalizeColumn($column)
     {
         if (is_string($column)) {
-            return \PHPExcel_Cell::columnIndexFromString($column) - 1;
+            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column) - 1;
         } else {
             return $column + self::normalizeColumn($this->startColumn);
         }

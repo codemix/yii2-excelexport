@@ -15,7 +15,7 @@ class ExcelFile extends BaseObject
      * @var string the writer class to use. Default is
      * `\PHPExcel_Writer_Excel2007`.
      */
-    public $writerClass = '\PHPExcel_Writer_Excel2007';
+    public $writerClass = '\PhpOffice\PhpSpreadsheet\Writer\Xlsx';
 
     /**
      * @var array options to pass to the constructor of \mikehaertl\tmp\File,
@@ -50,7 +50,7 @@ class ExcelFile extends BaseObject
     public function getWorkbook()
     {
         if ($this->_workbook === null) {
-            $this->_workbook = new \PHPExcel();
+            $this->_workbook = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         }
         return $this->_workbook;
     }

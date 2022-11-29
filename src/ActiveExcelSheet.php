@@ -204,7 +204,7 @@ class ActiveExcelSheet extends ExcelSheet
                                 date_default_timezone_set(Yii::$app->formatter->defaultTimeZone);
                                 $timestamp = strtotime($v);
                                 date_default_timezone_set($timezone);
-                                return \PHPExcel_Shared_Date::PHPToExcel($timestamp);
+                                return \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp);
                             }
                         };
                         break;
@@ -213,7 +213,7 @@ class ActiveExcelSheet extends ExcelSheet
                             if (empty($v)) {
                                 return null;
                             } else {
-                                return \PHPExcel_Shared_Date::PHPToExcel($this->toExcelTime($v));
+                                return \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($this->toExcelTime($v));
                             }
                         };
                         break;
