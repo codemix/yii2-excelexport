@@ -13,7 +13,7 @@ class ExcelFile extends BaseObject
 {
     /**
      * @var string the writer class to use. Default is
-     * `\PHPExcel_Writer_Excel2007`.
+     * `\PhpOffice\PhpSpreadsheet\Writer\Xlsx`.
      */
     public $writerClass = '\PhpOffice\PhpSpreadsheet\Writer\Xlsx';
 
@@ -33,7 +33,7 @@ class ExcelFile extends BaseObject
     protected $_sheetsCreated = false;
 
     /**
-     * @return PHPExcel_Writer_Abstract the writer instance
+     * @return \PhpOffice\PhpSpreadsheet\Writer\BaseWriter the writer instance
      */
     public function getWriter()
     {
@@ -45,7 +45,7 @@ class ExcelFile extends BaseObject
     }
 
     /**
-     * @return PHPExcel the workbook instance
+     * @return \PhpOffice\PhpSpreadsheet\Spreadsheet the workbook instance
      */
     public function getWorkbook()
     {

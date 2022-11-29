@@ -35,7 +35,7 @@ class ExcelSheet extends Component
     protected $_row;
 
     /**
-     * @param PHPExcel_WorkSheet $sheet
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet $sheet
      * @param array $config
      */
     public function __construct($sheet, $config = [])
@@ -45,7 +45,7 @@ class ExcelSheet extends Component
     }
 
     /**
-     * @return PHPExcel_WorkSheet
+     * @return \PhpOffice\PhpSpreadsheet\Worksheet
      */
     public function getSheet()
     {
