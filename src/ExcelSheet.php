@@ -35,7 +35,7 @@ class ExcelSheet extends Component
     protected $_row;
 
     /**
-     * @param PHPExcel_WorkSheet $sheet
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet $sheet
      * @param array $config
      */
     public function __construct($sheet, $config = [])
@@ -45,7 +45,7 @@ class ExcelSheet extends Component
     }
 
     /**
-     * @return PHPExcel_WorkSheet
+     * @return \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet
      */
     public function getSheet()
     {
@@ -312,7 +312,7 @@ class ExcelSheet extends Component
     public function normalizeColumn($column)
     {
         if (is_string($column)) {
-            return \PHPExcel_Cell::columnIndexFromString($column) - 1;
+            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column) - 1;
         } else {
             return $column + self::normalizeColumn($this->startColumn);
         }

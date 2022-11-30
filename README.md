@@ -16,7 +16,7 @@ Yii2 Excel Export
  * Create excel files with multiple sheets
  * Format cells and values
 
-To write the Excel file, we use the excellent [PHPExcel](https://github.com/PHPOffice/PHPExcel) package.
+To write the Excel file, we use the excellent [PHPSpreadsheet](https://github.com/PHPOffice/PhpSpreadsheet) package.
 
 ## Installation
 
@@ -49,7 +49,7 @@ Find more examples below.
 
 Property | Description
 ---------|-------------
-`writerClass` | The file format as supported by PHPOffice. The default is `\PHPExcel_Writer_Excel2007`
+`writerClass` | The file format as supported by PHPOffice. The default is `\PhpOffice\PhpSpreadsheet\Writer\Xlsx`
 `sheets` | An array of sheet configurations (see below). The keys are used as sheet names.
 `fileOptions` | Options to pass to the constructor of `mikehaertl\tmp\File`. Available keys are `prefix`, `suffix` and `directory`.
 
@@ -58,8 +58,8 @@ Methods | Description
 `saveAs($name)` | Saves the excel file under `$name`
 `send($name=null, $inline=false, $contentType = 'application/vnd.ms-excel')` | Sends the excel file to the browser. If `$name` is empty, the file is streamed for inline display, otherwhise a download dialog will open, unless `$inline` is `true` which will force inline display even if a filename is supplied.
 `createSheets()` | Only creates the sheets of the excel workbook but does not save the file. This is usually called implicitely on `saveAs()` and `send()` but can also be called manually to modify the sheets before saving.
-`getWriter()` | Returns the `PHPExcel_Writer_Abstract` instance
-`getWorkbook()` | Returns the `PHPExcel` workbook instance
+`getWriter()` | Returns the `\PhpOffice\PhpSpreadsheet\Writer\BaseWrite` instance
+`getWorkbook()` | Returns the `\PhpOffice\PhpSpreadsheet\Spreadsheet` workbook instance
 `getTmpFile()` | Returns the `mikehaertl\tmp\File` instance of the temporary file
 
 ### ExcelSheet
@@ -68,11 +68,11 @@ Property | Description
 ---------|-------------
 `data` | An array of data rows that should be used as sheet content
 `titles` (optional) | An array of column titles
-`types` (optional) | An array of types for specific columns as supported by PHPOffice, e.g. `\PHPExcel_Cell_DataType::TYPE_STRING`, indexed either by column name (e.g. `H`) or 0-based column index.
+`types` (optional) | An array of types for specific columns as supported by PHPOffice, e.g. `DataType::TYPE_STRING`, indexed either by column name (e.g. `H`) or 0-based column index.
 `formats` (optional) | An array of format strings for specific columns as supported by Excel, e.g. `#,##0.00`, indexed either by column name (e.g. `H`) or 0-based column index.
 `formatters` (optional) | An array of value formatters for specific columns. Each must be a valid PHP callable whith the signature `function formatter($value, $row, $data)` where `$value` is the cell value to format, `$row` is the 0-based row index and `$data` is the current row data from the `data` configuration. The callbacks must be indexed either by column name (e.g. `H`) or by the 0-based column index.
 `styles` (optional) | An array of style configuration indexed by cell coordinates or a range.
-`callbacks` (optional) | An array of callbacks indexed by column that should be called after rendering a cell, e.g. to apply further complex styling. Each must be a valid PHP callable with the signature `function callback($cell, $col, $row)` where `$cell` is the current `PHPExcel_Cell` object and `$col` and `$row` are the 0-based column and row indices respectively.
+`callbacks` (optional) | An array of callbacks indexed by column that should be called after rendering a cell, e.g. to apply further complex styling. Each must be a valid PHP callable with the signature `function callback($cell, $col, $row)` where `$cell` is the current `PhpOffice\PhpSpreadsheet\Cell\Cell` object and `$col` and `$row` are the 0-based column and row indices respectively.
 `startColumn` (optional) | The start column name or its 0-based index. When this is set, the 0-based offset is added to all numeric keys used anywhere in this class. Columns referenced by name will stay unchanged.  Default is 'A'.
 `startRow` (optional) | The start row. Default is 1.
 
@@ -116,7 +116,7 @@ Property | Description
 $file = \Yii::createObject([
     'class' => 'codemix\excelexport\ExcelFile',
 
-    'writerClass' => '\PHPExcel_Writer_Excel5', // Override default of `\PHPExcel_Writer_Excel2007`
+    'writerClass' => '\PhpOffice\PhpSpreadsheet\Writer\Xls', // Override default of `\PhpOffice\PhpSpreadsheet\Writer\Xlsx`
 
     'sheets' => [
 
@@ -177,7 +177,7 @@ $file = \Yii::createObject([
             'formatters' => [
                 // Dates and datetimes must be converted to Excel format
                 3 => function ($value, $row, $data) {
-                    return \PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
+                    return \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(strtotime($value));
                 },
             ],
         ],
@@ -215,7 +215,7 @@ $file->send('demo.xlsx');
 
 Since version 2.3.0 you can style single cells and cell ranges via the `styles`
 property of a sheet. For details on the accepted styling format please consult the
-[PHPExcel documentation](https://github.com/PHPOffice/PHPExcel/blob/develop/Documentation/markdown/Overview/08-Recipes.md#styles).
+[PhpSpreadsheet documentation](https://phpoffice.github.io/PhpSpreadsheet/namespaces/phpoffice-phpspreadsheet-style.html).
 
 ```php
 <?php
@@ -234,7 +234,7 @@ $file = \Yii::createObject([
                         'name' => 'Verdana'
                     ],
                     'alignment' => [
-                        'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                        'horizontal' => Alignment::HORIZONTAL_RIGHT,
                     ],
                 ],
             ],
@@ -256,7 +256,7 @@ $file
     ->getStyle('B1')
     ->getFont()
     ->getColor()
-    ->setARGB(\PHPExcel_Style_Color::COLOR_RED);
+    ->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
 $file->send();
 ```
 
@@ -271,27 +271,27 @@ $file = \Yii::createObject([
             'class' => 'codemix\excelexport\ActiveExcelSheet',
             'query' => User::find(),
             'callbacks' => [
-                // $cell is a PHPExcel_Cell object
+                // $cell is a \PhpOffice\PhpSpreadsheet\Cell object
                 'A' => function ($cell, $row, $column) {
                     $cell->getStyle()->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
                         'alignment' => [
-                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
                         ],
                         'borders' => [
                             'top' => [
-                                'style' => \PHPExcel_Style_Border::BORDER_THIN,
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                             ],
                         ],
                         'fill' => [
-                            'type' => \PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
                             'rotation' => 90,
-                            'startcolor' => [
+                            'startColor' => [
                                 'argb' => 'FFA0A0A0',
                             ],
-                            'endcolor' => [
+                            'endColor' => [
                                 'argb' => 'FFFFFFFF',
                             ],
                         ],
