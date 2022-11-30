@@ -45,7 +45,7 @@ class ExcelSheet extends Component
     }
 
     /**
-     * @return \PhpOffice\PhpSpreadsheet\Worksheet
+     * @return \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet
      */
     public function getSheet()
     {
