@@ -229,7 +229,7 @@ class ExcelSheet extends Component
         $titles = $this->normalizeIndex($this->getTitles());
         if ($titles) {
             $keys = array_keys($titles);
-            $col = array_shift($keys) + 1; // Add 1 because PhpSpreadsheet is 1-based
+            $col = array_shift($keys);
             foreach ($titles as $title) {
                 $this->_sheet->setCellValueByColumnAndRow($col++, $this->_row, $title);
             }
@@ -265,7 +265,7 @@ class ExcelSheet extends Component
     protected function renderRow($data, $row, $formats, $formatters, $callbacks, $types)
     {
         foreach (array_values($data) as $i => $value) {
-            $col = $i + self::normalizeColumn($this->startColumn) + 1; // Add 1 because PhpSpreadsheet is 1-based
+            $col = $i + self::normalizeColumn($this->startColumn);
             if (isset($formatters[$col]) && is_callable($formatters[$col])) {
                 $value = call_user_func($formatters[$col], $value, $row, $data);
             }
@@ -307,12 +307,12 @@ class ExcelSheet extends Component
     /**
      * @param int|string $column the column either as int or as string. If
      * numeric, the startColumn offset will be added.
-     * @return int the normalized numeric column index (0-based).
+     * @return int the normalized numeric column index (1-based).
      */
     public function normalizeColumn($column)
     {
         if (is_string($column)) {
-            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column) - 1;
+            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column);
         } else {
             return $column + self::normalizeColumn($this->startColumn);
         }
