@@ -307,12 +307,12 @@ class ExcelSheet extends Component
     /**
      * @param int|string $column the column either as int or as string. If
      * numeric, the startColumn offset will be added.
-     * @return int the normalized numeric column index (0-based).
+     * @return int the normalized numeric column index (1-based).
      */
     public function normalizeColumn($column)
     {
         if (is_string($column)) {
-            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column) - 1;
+            return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column);
         } else {
             return $column + self::normalizeColumn($this->startColumn);
         }
