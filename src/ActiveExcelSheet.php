@@ -7,6 +7,9 @@ use yii\helpers\ArrayHelper;
 /**
  * An excel sheet that is rendered with data from an `ActiveQuery`.
  * A query must be set with `setQuery()`.
+ *
+ * Note that for backwards compatibility this class still uses 0-based column
+ * indices for its configuration properties while PhpSpreadsheet now is 1-based.
  */
 class ActiveExcelSheet extends ExcelSheet
 {
@@ -58,7 +61,7 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @return string[] list of attributes for the table columns. If no
+     * @return string[] 0-based list of attributes for the table columns. If no
      * attributes are set, attributes are set to `ActiveRecord::attributes()`
      * for the main query record.
      */
@@ -71,7 +74,7 @@ class ActiveExcelSheet extends ExcelSheet
     }
 
     /**
-     * @param string[] $value list of attributes for the table columns
+     * @param string[] $value 0-based list of attributes for the table columns
      */
     public function setAttributes($value)
     {
@@ -130,8 +133,8 @@ class ActiveExcelSheet extends ExcelSheet
     {
         if ($this->_formats === null) {
             $this->_formats = [];
-            $attrs = $this->normalizeIndex($this->getAttributes());
-            $schemas = $this->normalizeIndex($this->getColumnSchemas());
+            $attrs = $this->getAttributes();
+            $schemas = $this->getColumnSchemas();
             foreach ($attrs as $c => $attr) {
                 if (!isset($schemas[$c])) {
                     continue;
@@ -176,15 +179,15 @@ class ActiveExcelSheet extends ExcelSheet
 
     /**
      * @return Callable[] the value formatters for the column cells indexed by
-     * 0-based column index.  If not set, the formatters are aut-generated from
+     * 0-based column index.  If not set, the formatters are auto-generated from
      * the DB column types.
      */
     public function getFormatters()
     {
         if ($this->_formatters === null) {
             $this->_formatters = [];
-            $attrs = $this->normalizeIndex($this->getAttributes());
-            $schemas = $this->normalizeIndex($this->getColumnSchemas());
+            $attrs = $this->getAttributes();
+            $schemas = $this->getColumnSchemas();
             foreach ($attrs as $c => $attr) {
                 if (!isset($schemas[$c])) {
                     continue;

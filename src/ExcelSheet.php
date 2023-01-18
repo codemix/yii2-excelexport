@@ -5,6 +5,9 @@ use yii\base\Component;
 
 /**
  * An excel worksheet
+ *
+ * Note that for backwards compatibility this class still uses 0-based column
+ * indices for its configuration properties while PhpSpreadsheet now is 1-based.
  */
 class ExcelSheet extends Component
 {
@@ -13,7 +16,7 @@ class ExcelSheet extends Component
 
     /**
      * @var int|string the start column name or its 0-based index. When this is
-     * set, the 0-based offset is added to all numeric keys used anywhere in
+     * set, the offset is added to all numeric column keys used anywhere in
      * this class. Columns referenced by name will stay unchanged.  Default is
      * 'A'.
      */
@@ -290,7 +293,8 @@ class ExcelSheet extends Component
     /**
      * @param array $data any data indexed by 0-based colum index or by column name.
      * @return array the array with alphanumeric column keys (A, B, C, ...)
-     * converted to numeric indices
+     * converted to numeric indices and numeric indices converted to 1-based
+     * and startColumn added
      */
     protected function normalizeIndex($data)
     {
@@ -305,7 +309,7 @@ class ExcelSheet extends Component
     }
 
     /**
-     * @param int|string $column the column either as int or as string. If
+     * @param int|string $column the column either as 0-based index or as string. If
      * numeric, the startColumn offset will be added.
      * @return int the normalized numeric column index (1-based).
      */
@@ -314,7 +318,10 @@ class ExcelSheet extends Component
         if (is_string($column)) {
             return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($column);
         } else {
-            return $column + self::normalizeColumn($this->startColumn);
+            $startIndex = is_string($this->startColumn) ?
+                self::normalizeColumn($this->startColumn) :
+                ($this->startColumn + 1);
+            return $column + $startIndex;
         }
     }
 }
