@@ -1,5 +1,5 @@
 <?php
-namespace codemix\excelexport;
+namespace sunyujin\excelexport;
 
 use yii\base\Component;
 

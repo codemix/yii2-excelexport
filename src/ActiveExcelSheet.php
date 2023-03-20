@@ -1,5 +1,5 @@
 <?php
-namespace codemix\excelexport;
+namespace sunyujin\excelexport;
 
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -315,7 +315,7 @@ class ActiveExcelSheet extends ExcelSheet
      * from DB to application timezone.
      *
      * @param string $value the datetime value
-     * @return int timezone offset in seconds 
+     * @return int timezone offset in seconds
      * @see [[yii\i18n\Formatter::defaultTimezone]]
      * @see [[yii\i18n\Formatter::timezone]]
      */
