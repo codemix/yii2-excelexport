@@ -234,7 +234,7 @@ class ExcelSheet extends Component
             $keys = array_keys($titles);
             $col = array_shift($keys);
             foreach ($titles as $title) {
-                $this->_sheet->setCellValueByColumnAndRow($col++, $this->_row, $title);
+                $this->_sheet->setCellValue([$col++, $this->_row], $title);
             }
             $this->_row++;
         }
@@ -273,18 +273,18 @@ class ExcelSheet extends Component
                 $value = call_user_func($formatters[$col], $value, $row, $data);
             }
             if (isset($types[$col])) {
-                $this->_sheet->setCellValueExplicitByColumnAndRow($col, $row, $value, $types[$col]);
+                $this->_sheet->setCellValueExplicit([$col, $row], $value, $types[$col]);
             } else {
-                $this->_sheet->setCellValueByColumnAndRow($col, $row, $value);
+                $this->_sheet->setCellValue([$col, $row], $value);
             }
             if (isset($formats[$col])) {
                 $this->_sheet
-                    ->getStyleByColumnAndRow($col, $row)
+                    ->getStyle([$col, $row])
                     ->getNumberFormat()
                     ->setFormatCode($formats[$col]);
             }
             if (isset($callbacks[$col]) && is_callable($callbacks[$col])) {
-                $cell = $this->_sheet->getCellByColumnAndRow($col, $row);
+                $cell = $this->_sheet->getCell([$col, $row]);
                 call_user_func($callbacks[$col], $cell, $col, $row);
             }
         }
